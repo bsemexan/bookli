@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Bookli</string>
     <string name="button_search">Search</string>
+    <string name="empty_view">List view is empty</string>
 </resources>

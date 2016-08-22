@@ -1,6 +1,7 @@
 package com.example.android.bookli;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+
     private static final String GOOGLE_REQUEST_URL =
             "https://www.googleapis.com/books/v1/volumes?q=";
 
@@ -47,10 +49,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         searchBook = new ArrayList<>();
         listView = (ListView) findViewById(R.id.list);
-        adapter = new BookAdapter(this, searchBook);
-        listView.setAdapter(adapter);
+        listView.setEmptyView( findViewById( R.id.empty_list_view ) );
+        listView.setAdapter(adapter = new BookAdapter(this, searchBook));
 
         submit = (Button) findViewById(R.id.button);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -64,12 +67,31 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             ArrayList<Book> books = (ArrayList<Book>) savedInstanceState.getSerializable("key");
-            searchBook.addAll(books);
+            adapter.clear();
+            adapter.addAll(books);
             adapter.notifyDataSetChanged();
         }
 
-
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        savedState.putSerializable("key", searchBook);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            System.out.println("this's landscape");
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            System.out.println("this's portrait");
+        }
+    }
+
 
     private boolean isOnline() {
         ConnectivityManager cm =
@@ -88,11 +110,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedState) {
-        super.onSaveInstanceState(savedState);
-        savedState.putSerializable("key", searchBook);
-    }
     /**
      * {@link AsyncTask} to perform the network request on a background thread, and then
      * update the UI with the first earthquake in the response.
@@ -137,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Book> books) {
 
+            listView.setAdapter(new BookAdapter(MainActivity.this, books));
             if (books == null) {
                 return;
             }
@@ -233,4 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 }
+
+

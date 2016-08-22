@@ -11,20 +11,18 @@ import java.util.ArrayList;
 
 /**
  * Created by beryy on 8/19/16.
-*/
+ */
 public class BookAdapter extends ArrayAdapter<Book> {
 
-    public BookAdapter (Activity context, ArrayList<Book> books){
+    public BookAdapter(Activity context, ArrayList<Book> books) {
         super(context, 0, books);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View bookItemView = convertView;
 
-        if(bookItemView == null)
-        {
+        if (bookItemView == null) {
             bookItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.activity_main, parent, false);
         }
